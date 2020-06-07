@@ -1,0 +1,15 @@
+server:
+  port: 9000
+logging:
+  level:
+    io:
+      netty: DEBUG
+    reactor: DEBUG
+    com:
+      greglturnquist: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
