@@ -3,10 +3,10 @@ package com.greglturnquist.learningspringboot;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class LearningSpringBootApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 

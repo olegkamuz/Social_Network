@@ -5,7 +5,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -13,13 +12,13 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.util.List;
 
-@Controller
+//@Controller
 public class BlockingHomeController {
     private static final String BASE_PATH = "/images";
     private static final String FILENAME = "{filename:.+}";
     private final BlockingImageService imageService;
 
-    public BlockingHomeController(ImageService defaultImageService, BlockingImageService blockingImageService) {
+    public BlockingHomeController(ImageServiceOld defaultImageService, BlockingImageService blockingImageService) {
         this.imageService = blockingImageService;
     }
 

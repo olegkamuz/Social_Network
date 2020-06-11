@@ -1,5 +1,15 @@
 package com.greglturnquist.learningspringboot;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
@@ -8,102 +18,113 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ImageService {
-    private static String UPLOAD_ROOT = "upload-dir";
+
+    public static String UPLOAD_ROOT = "upload-dir";
+
     private final ResourceLoader resourceLoader;
 
-    public ImageService(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
+    private final ImageRepository imageRepository;
 
-    public Flux<Image> findAllImagesOldFix() {
-        try {
-            DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(UPLOAD_ROOT));
-            Iterator<Path> iterator = ds.iterator();
-            List<Image> list = new ArrayList<>();
-            while (iterator.hasNext()) {
-                Path path = iterator.next();
-                list.add(new Image(String.valueOf(path.hashCode()), path.getFileName().toString()));
-            }
-            return Flux.fromIterable(list);
-        } catch (IOException e) {
-            return Flux.empty();
-        }
+    public ImageService(ResourceLoader resourceLoader, ImageRepository imageRepository) {
+        this.resourceLoader = resourceLoader;
+        this.imageRepository = imageRepository;
     }
 
     public Flux<Image> findAllImages() {
-        try {
-            return Flux.fromStream(
-                    StreamSupport.stream(Files.newDirectoryStream(Paths.get(UPLOAD_ROOT)).spliterator(), true)
-                            .map(path -> new Image(String.valueOf(path.hashCode()), path.getFileName().toString())));
-        } catch (IOException e) {
-            return Flux.empty();
-        }
+        return imageRepository.findAll()
+                .log("findAll");
     }
 
     public Mono<Resource> findOneImage(String filename) {
-        Resource resource = resourceLoader.getResource(
-                "file:" + UPLOAD_ROOT + "/" + filename);
-        Mono<Resource> mono = Mono.fromSupplier(() -> resource);
-        int t =4 ;
-        return mono;
+        return Mono.fromSupplier(() ->
+                resourceLoader.getResource(
+                        "file:" + UPLOAD_ROOT + "/" + filename))
+                .log("findOneImage");
     }
 
     public Mono<Void> createImage(Flux<FilePart> files) {
         return files
-                .flatMap(file -> file.transferTo(
-                        Paths.get(UPLOAD_ROOT, file.filename()).toFile()))
-                .then();
+                .log("createImage-files")
+                .flatMap(file -> {
+                    Mono<Image> saveDatabaseImage = imageRepository.save(
+                            new Image(
+                                    UUID.randomUUID().toString(),
+                                    file.filename()))
+                            .log("createImage-save");
+
+                    Mono<Void> copyFile = Mono.just(
+                            Paths.get(UPLOAD_ROOT, file.filename())
+                                    .toFile())
+                            .log("createImage-picktarget")
+                            .map(destFile -> {
+                                try {
+                                    destFile.createNewFile();
+                                    return destFile;
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            })
+                            .log("createImage-newfile")
+                            .flatMap(file::transferTo)
+                            .log("createImage-copy");
+
+                    return Mono.when(saveDatabaseImage, copyFile)
+                            .log("createImage-when");
+                })
+                .log("createImage-flatMap")
+                .then()
+                .log("createImage-done");
     }
 
     public Mono<Void> deleteImage(String filename) {
-        return Mono.fromRunnable(() -> {
+        Mono<Void> deleteDatabaseImage = imageRepository
+                .findByName(filename)
+                .log("deleteImage-find")
+                .flatMap(imageRepository::delete)
+                .log("deleteImage-record");
+
+        Mono<Object> deleteFile = Mono.fromRunnable(() -> {
             try {
-                Files.deleteIfExists(Paths.get(UPLOAD_ROOT, filename));
+                Files.deleteIfExists(
+                        Paths.get(UPLOAD_ROOT, filename));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
+        })
+                .log("deleteImage-file");
+
+        return Mono.when(deleteDatabaseImage, deleteFile)
+                .log("deleteImage-when")
+                .then()
+                .log("deleteImage-done");
     }
 
     /**
-     * Pre-load some fake images
+     * Pre-load some test images
      *
-     * @return Spring Boot {@link CommandLineRunner} automatically run after app context is loaded.
+     * @return Spring Boot {@link CommandLineRunner} automatically
+     *         run after app context is loaded.
      */
-//    @Bean
+    @Bean
     CommandLineRunner setUp() throws IOException {
-
         return (args) -> {
             FileSystemUtils.deleteRecursively(new File(UPLOAD_ROOT));
 
             Files.createDirectory(Paths.get(UPLOAD_ROOT));
 
-            FileCopyUtils.copy("Test file", new FileWriter(UPLOAD_ROOT + "/test1.jpg"));
+            FileCopyUtils.copy("Test file",
+                    new FileWriter(UPLOAD_ROOT +
+                            "/learning-spring-boot-cover.jpg"));
 
-            FileCopyUtils.copy("Test file2", new FileWriter(UPLOAD_ROOT + "/test2.jpg"));
+            FileCopyUtils.copy("Test file2",
+                    new FileWriter(UPLOAD_ROOT +
+                            "/learning-spring-boot-2nd-edition-cover.jpg"));
 
-            FileCopyUtils.copy("Test file3", new FileWriter(UPLOAD_ROOT + "/test3.jpg"));
+            FileCopyUtils.copy("Test file3",
+                    new FileWriter(UPLOAD_ROOT + "/bazinga.png"));
         };
-
     }
-
 }

@@ -3,7 +3,9 @@ package com.greglturnquist.learningspringboot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.metrics.export.prometheus.EnablePrometheusMetrics;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
 
 @SpringBootApplication

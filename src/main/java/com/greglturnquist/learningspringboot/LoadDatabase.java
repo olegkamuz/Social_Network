@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 
-@Configuration
+//@Configuration
 public class LoadDatabase {
 
-    @Bean
+//    @Bean
     CommandLineRunner init(ChapterRepository repository) {
         return args -> {
             Flux.just (

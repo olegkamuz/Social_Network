@@ -2,6 +2,8 @@ package com.greglturnquist.learningspringboot;
 
 import java.io.IOException;
 
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,15 +20,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-//@Controller
-public class HomeController {
+@Controller
+@EnableMongoRepositories(basePackageClasses = MongoOperations.class)
 
+public class HomeController {
     private static final String BASE_PATH = "/images";
     private static final String FILENAME = "{filename:.+}";
 
     private final ImageService imageService;
 
-    public HomeController(ImageService imageService) {
+    public HomeController(ImageService imageService, ImageRepository imageRepository) {
         this.imageService = imageService;
     }
 
@@ -68,5 +71,4 @@ public class HomeController {
         return imageService.deleteImage(filename)
                 .then(Mono.just("redirect:/"));
     }
-
 }

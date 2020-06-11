@@ -2,18 +2,17 @@ package com.greglturnquist.learningspringboot;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
 
-@Service
+//@Service
 public class BlockingImageService {
 
-    private final ImageService imageService;
+    private final ImageServiceOld imageService;
 
-    public BlockingImageService(ImageService imageService) {
+    public BlockingImageService(ImageServiceOld imageService) {
         this.imageService = imageService;
     }
 

@@ -2,9 +2,12 @@ server:
   port: 9000
 logging:
   level:
-    io:
-      netty: DEBUG
-    reactor: DEBUG
+#    org:
+#      springframework:
+#        data: TRACE
+#    reactor:
+#      core: TRACE
+#      util: TRACE
     com:
       greglturnquist: DEBUG
 management:
