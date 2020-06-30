@@ -42,9 +42,8 @@ public class HomeController {
     @GetMapping(value = BASE_PATH + "/" + FILENAME + "/raw",
             produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
-    public Mono<ResponseEntity<?>> oneRawImage(
-            @PathVariable String filename) {
-        return imageService.findOneImage(filename)
+    public Mono<ResponseEntity<?>> oneRawImage(@PathVariable String filename) {
+        return imageService.findOneImage(filename).log("oneRawImage")
                 .map(resource -> {
                     try {
                         return ResponseEntity.ok()

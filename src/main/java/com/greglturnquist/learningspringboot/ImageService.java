@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -28,6 +29,7 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
 
+    @Autowired
     public ImageService(ResourceLoader resourceLoader, ImageRepository imageRepository) {
         this.resourceLoader = resourceLoader;
         this.imageRepository = imageRepository;

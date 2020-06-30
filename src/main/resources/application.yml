@@ -2,12 +2,12 @@ server:
   port: 9000
 logging:
   level:
-#    org:
-#      springframework:
-#        data: TRACE
-#    reactor:
-#      core: TRACE
-#      util: TRACE
+    org:
+      springframework:
+        data: TRACE
+    reactor:
+      core: TRACE
+      util: TRACE
     com:
       greglturnquist: DEBUG
 management:
@@ -15,4 +15,7 @@ management:
     web:
       exposure:
         include: "*"
-
+spring:
+  devtools:
+    remote:
+      secret: learning-spring-boot
