@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,10 +30,13 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
 
+    private final MeterRegistry meterRegistry;
+
     @Autowired
-    public ImageService(ResourceLoader resourceLoader, ImageRepository imageRepository) {
+    public ImageService(ResourceLoader resourceLoader, ImageRepository imageRepository, MeterRegistry meterRegistry) {
         this.resourceLoader = resourceLoader;
         this.imageRepository = imageRepository;
+        this.meterRegistry = meterRegistry;
     }
 
     public Flux<Image> findAllImages() {
@@ -73,7 +77,14 @@ public class ImageService {
                             .flatMap(file::transferTo)
                             .log("createImage-copy");
 
-                    return Mono.when(saveDatabaseImage, copyFile)
+                    Mono<Void> countFile = Mono.fromRunnable(() -> {
+                        meterRegistry
+                                .summary("files.uploaded.bytes")
+                                .record(Paths.get(UPLOAD_ROOT,
+                                        file.filename()).toFile().length());
+                    });
+
+                    return Mono.when(saveDatabaseImage, copyFile, countFile)
                             .log("createImage-when");
                 })
                 .log("createImage-flatMap")

@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id "com.gorylenko.gradle-git-properties" version "2.2.3"
 }
 
 group = 'com.greglturnquist.learningspringboot'
@@ -39,8 +40,13 @@ dependencies {
     compile("org.seleniumhq.selenium:htmlunit-driver")
     compile("org.seleniumhq.selenium:selenium-java")
 
-    compile("org.springframework.boot:spring-boot-devtools")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
+
+bootJar {
+    classpath configurations.developmentOnly
+}
+
 test {
     useJUnitPlatform()
 }
@@ -51,5 +57,12 @@ jar {
         attributes(
                 'Main-Class': 'com.greglturnquist.learningspringboot.LearningSpringBootApplication'
         )
+
     }
 }
+
+springBoot {
+    buildInfo()
+}
+
+

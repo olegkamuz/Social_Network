@@ -1,1 +1,3 @@
 rootProject.name = 'learning-spring-boot'
+include 'SquareDigits'
+

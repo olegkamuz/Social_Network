@@ -1,9 +1,11 @@
 server:
-  port: 9000
+  port: 9090
 logging:
   level:
     org:
       springframework:
+        boot:
+          devtools: DEBUG
         data: TRACE
     reactor:
       core: TRACE
@@ -11,6 +13,12 @@ logging:
     com:
       greglturnquist: DEBUG
 management:
+  info:
+    git:
+      mode: full
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
@@ -19,3 +27,9 @@ spring:
   devtools:
     remote:
       secret: learning-spring-boot
+    restart:
+      enabled: true
+  data:
+    mongodb:
+      authentication-database: CloudFoundry_c49ilitt_dg8r5mpj
+      uri: mongodb://oleg:abc123@ds035593.mlab.com:35593/CloudFoundry_c49ilitt_dg8r5mpj?retryWrites=false
