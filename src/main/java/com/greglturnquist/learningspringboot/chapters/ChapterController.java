@@ -1,4 +1,4 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.chapters;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

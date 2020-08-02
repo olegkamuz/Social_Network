@@ -1,4 +1,4 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.ops;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;

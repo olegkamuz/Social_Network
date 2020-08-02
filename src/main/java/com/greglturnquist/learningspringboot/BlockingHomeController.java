@@ -1,5 +1,6 @@
 package com.greglturnquist.learningspringboot;
 
+import com.greglturnquist.learningspringboot.images.ImageServiceOld;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;

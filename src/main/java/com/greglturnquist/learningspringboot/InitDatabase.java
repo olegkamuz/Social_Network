@@ -1,6 +1,6 @@
 package com.greglturnquist.learningspringboot;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.greglturnquist.learningspringboot.images.Image;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

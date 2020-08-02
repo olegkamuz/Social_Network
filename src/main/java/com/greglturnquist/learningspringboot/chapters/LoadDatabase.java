@@ -1,8 +1,6 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.chapters;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 
 //@Configuration

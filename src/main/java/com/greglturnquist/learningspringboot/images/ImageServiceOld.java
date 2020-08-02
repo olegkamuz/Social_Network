@@ -1,7 +1,6 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.images;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.codec.multipart.FilePart;
@@ -21,8 +20,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service

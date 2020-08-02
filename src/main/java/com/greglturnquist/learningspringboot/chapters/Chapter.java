@@ -1,4 +1,4 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.chapters;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

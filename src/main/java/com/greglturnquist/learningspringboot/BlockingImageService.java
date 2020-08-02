@@ -1,5 +1,7 @@
 package com.greglturnquist.learningspringboot;
 
+import com.greglturnquist.learningspringboot.images.Image;
+import com.greglturnquist.learningspringboot.images.ImageServiceOld;
 import org.springframework.core.io.Resource;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Flux;

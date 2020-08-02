@@ -1,4 +1,4 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.chapters;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 

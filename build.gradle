@@ -40,29 +40,31 @@ dependencies {
     compile("org.seleniumhq.selenium:htmlunit-driver")
     compile("org.seleniumhq.selenium:selenium-java")
 
+    compile('org.springframework.boot:spring-boot-starter-amqp')
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
-bootJar {
-    classpath configurations.developmentOnly
-}
-
-test {
-    useJUnitPlatform()
-}
-
-jar {
-//    enabled=true
-    manifest {
-        attributes(
-                'Main-Class': 'com.greglturnquist.learningspringboot.LearningSpringBootApplication'
-        )
-
+    bootJar {
+        classpath configurations.developmentOnly
     }
-}
 
-springBoot {
-    buildInfo()
-}
+    test {
+        useJUnitPlatform()
+    }
+
+    jar {
+//    enabled=true
+        manifest {
+            attributes(
+                    'Main-Class': 'com.greglturnquist.learningspringboot.LearningSpringBootApplication'
+            )
+
+        }
+    }
+
+    springBoot {
+        buildInfo()
+    }
 
 

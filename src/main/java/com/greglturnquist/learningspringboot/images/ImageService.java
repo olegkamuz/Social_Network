@@ -1,4 +1,4 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.images;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -122,7 +122,7 @@ public class ImageService {
      *         run after app context is loaded.
      */
     @Bean
-    CommandLineRunner setUp() throws IOException {
+    CommandLineRunner setThingsUp() throws IOException {
         return (args) -> {
             FileSystemUtils.deleteRecursively(new File(UPLOAD_ROOT));
 

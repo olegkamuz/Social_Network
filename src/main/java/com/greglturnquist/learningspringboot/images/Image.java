@@ -1,4 +1,4 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.images;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

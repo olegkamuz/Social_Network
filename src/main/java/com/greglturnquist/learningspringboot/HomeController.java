@@ -1,7 +1,11 @@
 package com.greglturnquist.learningspringboot;
 
 import java.io.IOException;
+import java.util.HashMap;
 
+import com.greglturnquist.learningspringboot.images.CommentReaderRepository;
+import com.greglturnquist.learningspringboot.images.ImageRepository;
+import com.greglturnquist.learningspringboot.images.ImageService;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import reactor.core.publisher.Flux;
@@ -22,20 +26,35 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @EnableMongoRepositories(basePackageClasses = MongoOperations.class)
-
 public class HomeController {
     private static final String BASE_PATH = "/images";
     private static final String FILENAME = "{filename:.+}";
 
     private final ImageService imageService;
+    private final CommentReaderRepository repository;
 
-    public HomeController(ImageService imageService, ImageRepository imageRepository) {
+    public HomeController(ImageService imageService, ImageRepository imageRepository, CommentReaderRepository repository) {
         this.imageService = imageService;
+        this.repository = repository;
     }
 
     @GetMapping("/")
     public Mono<String> index(Model model) {
-        model.addAttribute("images", imageService.findAllImages());
+        model.addAttribute("images", imageService
+                .findAllImages()
+                .flatMap(image -> Mono
+                        .just(image)
+                        .zipWith(repository.findByImageId(image.getId()).collectList()))
+                .map(imageAndComments ->
+                        new HashMap<String, Object>() {
+                            {
+                                put("id", imageAndComments.getT1().getId());
+                                put("name", imageAndComments.getT1().getName());
+                                put("comments", imageAndComments.getT2());
+                            }
+                        })
+        );
+        model.addAttribute("extra", "DevTools can also detect code changes too");
         return Mono.just("index");
     }
 

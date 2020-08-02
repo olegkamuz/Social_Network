@@ -1,7 +1,6 @@
-package com.greglturnquist.learningspringboot;
+package com.greglturnquist.learningspringboot.images;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 public interface ImageRepository extends ReactiveCrudRepository<Image, String> {
